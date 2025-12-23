@@ -1,0 +1,36 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name:  config-server-application
+
+#  zipkin:
+#    enabled: true
+#    base-url: http://localhost:9411/
+#    service:
+#      name: config-server-local
+#    sender:
+#      type: web
+
+#  sleuth:
+#    sampler:
+#      probability: 1.0
+
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config-repo
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+
+#management:
+#  tracing:
+#    sampling:
+#      probability: 1.0

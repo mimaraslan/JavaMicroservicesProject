@@ -1,0 +1,60 @@
+server:
+  port: 9592
+
+spring:
+
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411
+    service:
+      name: ledger-service
+    sender:
+      type: web
+
+  sleuth:
+    sampler:
+      probability: 1.0
+
+  datasource:
+    url: jdbc:postgresql://localhost:9999/Micro_LedgerServiceDB   # PostgreSQL veritabanı URL'si (Docker)
+    username: postgres                                    # Veritabanı kullanıcı adı
+    password: 123456789                                  # Veritabanı şifresi
+    driver-class-name: org.postgresql.Driver             # PostgreSQL JDBC sürücüsü
+  jpa:
+    hibernate:
+      ddl-auto: update                                 # Veritabanı şemasının otomatik güncellenmesi
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # Producer acks (mesajın başarılı gönderilip gönderilmediğini kontrol için):
+      acks: all
+    consumer:
+      group-id: ledger-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    # Consumer concurrency (birden fazla thread ile paralel tüketim):
+    # Özellikle yüksek performanslı finansal sistemlerde concurrency ve partition sayısı kritik.
+    listener:
+      concurrency: 2
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

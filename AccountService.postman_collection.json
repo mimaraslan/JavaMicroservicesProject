@@ -1,0 +1,630 @@
+{
+	"info": {
+		"_postman_id": "6ab85b38-c957-4dc4-87f1-70d3a4a7431f",
+		"name": "AccountService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "77926",
+		"_collection_link": "https://interstellar-capsule-247109.postman.co/workspace/Java-World~f73524f9-dba0-4763-8e27-e4f79695829d/collection/77926-6ab85b38-c957-4dc4-87f1-70d3a4a7431f?action=share&source=collection_link&creator=77926"
+	},
+	"item": [
+		{
+			"name": "Register 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"keisoiwafewei-8345@yopmail.com\",\n  \"password\": \"111\",\n  \"username\": \"user1\",\n  \"firstName\": \"Mimar\",\n  \"lastName\": \"Aslan\",\n  \"phoneNumber\": \"111-11-11\",\n  \"address\": \"Ankara\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/register",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"111@gmail.com\",\n  \"password\": \"111\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/login",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Keycloak Token (Password Grant) 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "keisoiwafewei-8345@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "111",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloakUrl}}"
+					],
+					"path": [
+						"realms",
+						"{{keycloakRealm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"222@gmail.com\",\n  \"password\": \"222\",\n  \"username\": \"user2\",\n  \"firstName\": \"Teoman\",\n  \"lastName\": \"Kurt\",\n  \"phoneNumber\": \"222-22-22\",\n  \"address\": \"Antalya\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/register",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"222@gmail.com\",\n  \"password\": \"222\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/login",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Keycloak Token (Password Grant) 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "baziterukeu-8185@yopmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "222",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloakUrl}}"
+					],
+					"path": [
+						"realms",
+						"{{keycloakRealm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register 3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"333@gmail.com\",\n  \"password\": \"333\",\n  \"username\": \"user3\",\n  \"firstName\": \"Mimar\",\n  \"lastName\": \"Aslan\",\n  \"phoneNumber\": \"333-33-33\",\n  \"address\": \"Ankara\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/register",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Keycloak Token (Password Grant) 3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "3333@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "3333",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloakUrl}}"
+					],
+					"path": [
+						"realms",
+						"{{keycloakRealm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Accounts (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account By Id (via Gateway) 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/1",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account By Id (via Gateway) 2",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/2",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account (via Gateway) 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"1111@gmail.com\",\n  \"password\": \"1111\",\n  \"username\": \"user_1\",\n  \"firstName\": \"Berkay\",\n  \"lastName\": \"Serdar\",\n  \"phoneNumber\": \"1111111\",\n  \"address\": \"Mersin\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/1",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account (via Gateway) 2",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJOdnVRYXYzbW5YN3JQcGZFRUJYUDYzekhHQnYtZnJ3bFFCZWItSEc2S3dBIn0.eyJleHAiOjE3NjYxNjY5OTIsImlhdCI6MTc2NjE2NjkzMiwianRpIjoiN2Y5YTUyNzAtYjRiMC00Nzc0LWFlMmQtMDA5ZTlkNjUyYTQyIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiOWJkMTU2ZWQtMWI0Ny00NzgwLTkxNDctYjNiMzFhYTUyZDlmIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYWNjb3VudC1zZXJ2aWNlIiwic2Vzc2lvbl9zdGF0ZSI6Ijk2NDM5ODVjLWFkODUtNDA0NC1hN2JhLWQ4NjA1YjhkN2QyNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6Ijk2NDM5ODVjLWFkODUtNDA0NC1hN2JhLWQ4NjA1YjhkN2QyNCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiVGVvbWFuIEt1cnQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIyMjJAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6IlRlb21hbiIsImZhbWlseV9uYW1lIjoiS3VydCIsImVtYWlsIjoiMTIzNDU2QGV4YW1wbGUuY29tIn0.Jg545HsTPXmUazWWK98RFdlZEHvcpnWzo_lao0BPadLZ0sCgfj9Hr7xMmTV_61IYge-P5b_QbZBoCxKFAbLbDHw6MBbaHHc3ZBMbjJmwDacdBRcIgktTDWfMdqtmlQp2AyRie78VESxTRdHxTkVHUVyjAkuPM2thDsryK7CALVUs5ob-z03tVCDSuseBgCYAAItvfneFQosRgPTRSc6r74DbGv11bfNl0ct37CZg01W2j2tyMw5xndH3ou0ujhLz-eeIyFBWQKF3bcW2iztq4rimiP4ydnd4B6-N9qjpjqpBJ309cXh69tUDphs6DvG7mdyOkiFIgDPuFngQWwFWdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"2222@gmail.com\",\n  \"password\": \"2222\",\n  \"username\": \"user_2\",\n  \"firstName\": \"Cem\",\n  \"lastName\": \"Burcu\",\n  \"phoneNumber\": \"2222222\",\n  \"address\": \"Antalya\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/2",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account (via Gateway) 3",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"3333@gmail.com\",\n  \"password\": \"3333\",\n  \"username\": \"user_3\",\n  \"firstName\": \"Okan\",\n  \"lastName\": \"Tolga\",\n  \"phoneNumber\": \"333333\",\n  \"address\": \"Anadolu\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/3",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout (via Gateway) 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"1111@gmail.com\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/logout",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout (via Gateway) 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"email\": \"2222@gmail.com\"}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/logout",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gatewayBaseUrl",
+			"value": "http://localhost:80"
+		},
+		{
+			"key": "accountId",
+			"value": "1"
+		},
+		{
+			"key": "token1",
+			"value": ""
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "http://localhost:8180"
+		},
+		{
+			"key": "keycloakRealm",
+			"value": "master"
+		},
+		{
+			"key": "clientId",
+			"value": "account-service"
+		},
+		{
+			"key": "clientSecret",
+			"value": "CHANGE_ME"
+		},
+		{
+			"key": "username",
+			"value": "1234@example.com"
+		},
+		{
+			"key": "password",
+			"value": "1234"
+		},
+		{
+			"key": "token2",
+			"value": ""
+		},
+		{
+			"key": "token3",
+			"value": ""
+		}
+	]
+}

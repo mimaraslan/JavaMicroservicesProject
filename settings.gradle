@@ -1,0 +1,16 @@
+rootProject.name = 'JavaMicroservicesProject'
+
+include 'ConfigServerLocal'
+include 'DashboardEurekaServer'
+include 'ApiGatewayService'
+
+include 'ExceptionHandlerService'
+
+include 'AccountService'
+include 'LedgerService'
+include 'FraudService'
+include 'NotificationService'
+
+
+
+

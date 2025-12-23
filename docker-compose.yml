@@ -1,0 +1,297 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: my-postgresdb
+    ports:
+      - "9999:5432"
+    environment:
+      POSTGRES_PASSWORD: "123456789"
+      POSTGRES_DB: "keycloak"
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+      - ./sql/postgres/init-databases.sh:/docker-entrypoint-initdb.d/01-init-databases.sh
+    networks:
+      - keycloak-net
+      - microservices-net
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-init:
+    image: postgres:17
+    container_name: my-postgresdb-init
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: "123456789"
+    volumes:
+      - ./sql/postgres/init-databases.sh:/init-databases.sh
+    command: >
+      bash -c "
+        echo 'Waiting for PostgreSQL to be ready...'
+        until pg_isready -h postgres -p 5432 -U postgres >/dev/null 2>&1; do
+          sleep 2
+        done
+        echo 'PostgreSQL is ready! Running database initialization...'
+        bash /init-databases.sh
+        echo 'Database initialization completed!'
+      "
+    networks:
+      - keycloak-net
+      - microservices-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: my-zipkin
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - 9411:9411
+    volumes:
+      - zipkin-volume:/zipkin
+    networks:
+      - microservices-net
+    restart: always
+
+
+  redis:
+    image: redis
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-volume:/data
+    networks:
+      - microservices-net
+    restart: always
+
+
+  redpanda:
+    image: redpandadata/redpanda:v25.3.1
+    container_name: my-kafka
+    command: >
+      redpanda start
+        --overprovisioned
+        --smp 1
+        --memory 1G
+        --reserve-memory 0M
+        --node-id 0
+        --check=false
+    ports:
+      - "9092:9092"   # Kafka client port
+      - "8081:8081"   # Admin UI (isteğe bağlı)
+    environment:
+      REDPANDA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka-volume:/var/lib/redpanda/data
+    networks:
+      - kafka-net
+      - microservices-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: my-keycloak
+    command: start-dev --http-port=8080 --hostname-strict=false
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: 123456789
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+    ports:
+      - "8180:8080"
+    volumes:
+      - keycloak-volume:/opt/keycloak/data
+    networks:
+      - keycloak-net
+      - microservices-net
+    depends_on:
+      - postgres
+    restart: always
+
+  config-server:
+    build:
+      context: .
+      dockerfile: ConfigServerLocal/Dockerfile
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - microservices-net
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: DashboardEurekaServer/Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    networks:
+      - microservices-net
+    depends_on:
+      config-server:
+        condition: service_started
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  account-service:
+    build:
+      context: .
+      dockerfile: AccountService/Dockerfile
+    container_name: account-service
+    ports:
+      - "9591:9591"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_AccountServiceDB
+      SPRING_DATA_REDIS_HOST: redis
+      ZIPKIN_BASE_URL: http://zipkin:9411
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+    networks:
+      - microservices-net
+      - keycloak-net
+    depends_on:
+      - postgres
+      - redis
+      - zipkin
+      - config-server
+      - eureka-server
+    restart: always
+
+  ledger-service:
+    build:
+      context: .
+      dockerfile: LedgerService/Dockerfile
+    container_name: ledger-service
+    ports:
+      - "9592:9592"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_LedgerServiceDB
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      ZIPKIN_BASE_URL: http://zipkin:9411
+    networks:
+      - microservices-net
+      - keycloak-net
+      - kafka-net
+    depends_on:
+      - postgres
+      - redis
+      - redpanda
+      - zipkin
+      - config-server
+      - eureka-server
+    restart: always
+
+  fraud-service:
+    build:
+      context: .
+      dockerfile: FraudService/Dockerfile
+    container_name: fraud-service
+    ports:
+      - "9593:9593"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_FraudServiceDB
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      ZIPKIN_BASE_URL: http://zipkin:9411
+    networks:
+      - microservices-net
+      - keycloak-net
+      - kafka-net
+    depends_on:
+      - postgres
+      - redpanda
+      - zipkin
+      - config-server
+      - eureka-server
+    restart: always
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: NotificationService/Dockerfile
+    container_name: notification-service
+    ports:
+      - "9594:9594"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_NotificationServiceDB
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      ZIPKIN_BASE_URL: http://zipkin:9411
+    networks:
+      - microservices-net
+      - keycloak-net
+      - kafka-net
+    depends_on:
+      - postgres
+      - redpanda
+      - zipkin
+      - config-server
+      - eureka-server
+    restart: always
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ApiGatewayService/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_DATA_REDIS_HOST: redis
+      ZIPKIN_BASE_URL: http://zipkin:9411
+    networks:
+      - microservices-net
+      - keycloak-net
+    depends_on:
+      - redis
+      - zipkin
+      - config-server
+      - eureka-server
+      - account-service
+      - ledger-service
+      - fraud-service
+      - notification-service
+    restart: always
+
+networks:
+  kafka-net:
+  keycloak-net:
+  microservices-net:
+
+volumes:
+  kafka-volume:
+  keycloak-volume:
+  postgres-volume:
+  redis-volume:
+  zipkin-volume:

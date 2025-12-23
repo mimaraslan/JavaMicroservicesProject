@@ -1,0 +1,28 @@
+dependencies {
+    implementation libs.springCloudGateway
+    
+    // Eureka Client - LoadBalancer için gerekli
+    implementation libs.springCloudEurekaClient
+    // Spring Cloud LoadBalancer (lb://) için gerekli
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+    implementation libs.springCloudCircuitBreaker
+    implementation libs.springCloudCircuitBreakerReactor
+
+    implementation libs.bridgeBrave
+    implementation libs.reporterBrave
+    implementation libs.observation
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    implementation libs.redis
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    
+    // Actuator - Gateway route'larını görmek için gerekli
+    implementation libs.springBootActuator
+
+    implementation libs.webFlux
+}

@@ -1,0 +1,382 @@
+{
+	"info": {
+		"_postman_id": "d38b1e9b-9242-4c29-8242-05c79cff4909",
+		"name": "LedgerService_V4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16541069"
+	},
+	"item": [
+		{
+			"name": "Keycloak Token (Password Grant)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloakUrl}}"
+					],
+					"path": [
+						"realms",
+						"{{keycloakRealm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hi (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzQ19OLU9OdXlrMFctWkhZME1Bb3UwRmRqQTVRSmJUVUM4UGhSUFMzTUE4In0.eyJleHAiOjE3NjYxOTE5NzYsImlhdCI6MTc2NjE5MDE3NiwianRpIjoiOWVhYjYxNmUtNjZkYS00NGQyLTk2ZGMtZjE0Yzg0N2NhZjU5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZGUxN2Q0YTItMTljMy00YjI0LWExMTQtZDE2NzVkNWFiMWUyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYWNjb3VudC1zZXJ2aWNlIiwic2Vzc2lvbl9zdGF0ZSI6ImYwNWY0OGUyLWU3NjEtNGM0NC1hOTkxLTlhMGE4NDg1MDc4NSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6ImYwNWY0OGUyLWU3NjEtNGM0NC1hOTkxLTlhMGE4NDg1MDc4NSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWhtZXQgTWVobWV0IiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlcjEiLCJnaXZlbl9uYW1lIjoiQWhtZXQiLCJmYW1pbHlfbmFtZSI6Ik1laG1ldCIsImVtYWlsIjoiYXl0ZW5fYmF5c2FsQGhvdG1haWwuY29tIn0.m6-im68G8b4zpW1AoZsQSwbW0-0bjATv9S4GzmRidnJJn7cg9ncGYMpJgi0Q-dfoYJ-TaCEpUw1RY71rIojk0-4Heb3OKpuF0nDzymGaKIVBEA6zKMaKl8pH7yyBLnPpEFhQXxhRx-33MebbCCPhvxsH1ydu9zvXFc8Gye8Hi5MCJYy3gU9px1pWW9hISpwZBH24QK49B2Yi-CU2yzMPS0WK48Cb_kPQMVzExBPKXBT4wBWgLbB7s-fYb-k3cKkxlEaxGBIAjoVJrF9xFp7MlYYyjBzEMT0yCSMsTNqXNwcZfYrmylqUfbBiihs05TI4qVsZ_SSNPZdZqLZgJS0WjA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/hi",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"hi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Info (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzQ19OLU9OdXlrMFctWkhZME1Bb3UwRmRqQTVRSmJUVUM4UGhSUFMzTUE4In0.eyJleHAiOjE3NjYxOTE5NzYsImlhdCI6MTc2NjE5MDE3NiwianRpIjoiOWVhYjYxNmUtNjZkYS00NGQyLTk2ZGMtZjE0Yzg0N2NhZjU5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZGUxN2Q0YTItMTljMy00YjI0LWExMTQtZDE2NzVkNWFiMWUyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYWNjb3VudC1zZXJ2aWNlIiwic2Vzc2lvbl9zdGF0ZSI6ImYwNWY0OGUyLWU3NjEtNGM0NC1hOTkxLTlhMGE4NDg1MDc4NSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6ImYwNWY0OGUyLWU3NjEtNGM0NC1hOTkxLTlhMGE4NDg1MDc4NSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWhtZXQgTWVobWV0IiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlcjEiLCJnaXZlbl9uYW1lIjoiQWhtZXQiLCJmYW1pbHlfbmFtZSI6Ik1laG1ldCIsImVtYWlsIjoiYXl0ZW5fYmF5c2FsQGhvdG1haWwuY29tIn0.m6-im68G8b4zpW1AoZsQSwbW0-0bjATv9S4GzmRidnJJn7cg9ncGYMpJgi0Q-dfoYJ-TaCEpUw1RY71rIojk0-4Heb3OKpuF0nDzymGaKIVBEA6zKMaKl8pH7yyBLnPpEFhQXxhRx-33MebbCCPhvxsH1ydu9zvXFc8Gye8Hi5MCJYy3gU9px1pWW9hISpwZBH24QK49B2Yi-CU2yzMPS0WK48Cb_kPQMVzExBPKXBT4wBWgLbB7s-fYb-k3cKkxlEaxGBIAjoVJrF9xFp7MlYYyjBzEMT0yCSMsTNqXNwcZfYrmylqUfbBiihs05TI4qVsZ_SSNPZdZqLZgJS0WjA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/info",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kafka Test Message (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/test",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kafka Transfer Event (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fromAccount\": 1001,\n  \"toAccount\": 1002,\n  \"amount\": 150.00,\n  \"fromBalance\": 500.00,\n  \"fromAccountId\": 1,\n  \"toAccountId\": 2,\n  \"transferId\": \"tx-test-001\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/test2",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"test2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Money (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fromAccount\": 2001,\n  \"toAccount\": 1002,\n  \"amount\": 250.00\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/transfer",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ledger (via Gateway)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"accountId\": 3,\n  \"ledgerIbanNumber\": 3001,\n  \"balance\": 10000.00,\n  \"currency\": \"USD\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ledgers By Account (via Gateway)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/account/{{accountId}}",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"account",
+						"{{accountId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ledgers By Account  (paged, via Gateway)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/account?page={{page}}&size={{size}}",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"account"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "{{page}}"
+						},
+						{
+							"key": "size",
+							"value": "{{size}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gatewayBaseUrl",
+			"value": "http://localhost:80"
+		},
+		{
+			"key": "accountId",
+			"value": "1"
+		},
+		{
+			"key": "page",
+			"value": "0"
+		},
+		{
+			"key": "size",
+			"value": "5"
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "http://localhost:8180"
+		},
+		{
+			"key": "keycloakRealm",
+			"value": "master"
+		},
+		{
+			"key": "clientId",
+			"value": "account-service"
+		},
+		{
+			"key": "clientSecret",
+			"value": "CHANGE_ME"
+		},
+		{
+			"key": "username",
+			"value": "1234@example.com"
+		},
+		{
+			"key": "password",
+			"value": "P@ssw0rd!"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,167 @@
+/**
+ * ROOT build.gradle file:
+ */
+plugins {
+    /**
+     * Buraya yazılan özellikler tüm diğer servislerde etkili olacak.
+     * Diğerlerinde hiç yazmasak bile geçerli olacak bunlar.
+     */
+    id 'java'
+    id 'org.springframework.boot' version '3.0.13' apply false
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java-library'
+}
+
+// Root proje için bootJar ve application task'larını devre dışı bırak
+afterEvaluate {
+    if (tasks.findByName('bootJar') != null) {
+        tasks.named('bootJar') {
+            enabled = false
+        }
+    }
+    if (tasks.findByName('run') != null) {
+        tasks.named('run') {
+            enabled = false
+        }
+    }
+}
+
+allprojects {
+    /**
+     * tüm projelere(root+sub) pluginleri atamak için:
+     */
+    apply from  :  "${rootDir}/dependencies.gradle"
+    
+    // Root proje ve ExceptionHandlerService için application plugin'ini uygulama
+    if (project.name != 'ExceptionHandlerService' && project != rootProject) {
+    apply plugin: 'application'
+    }
+    
+    group = 'com.mimaraslan'
+    version = 'v.1.0.0'
+    
+    // Java 21 toolchain kullan (Gradle'ın Java 21'i otomatik bulmasını sağlar)
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+}
+
+subprojects {
+    /**
+     * sadece sub
+     * Bütün alt projelerimde group ve version adı ile
+     * diğer özelliklerin aynı olması için:
+     */
+    tasks.withType(JavaCompile).tap {
+        configureEach {
+            options.encoding = 'UTF-8'
+            // Annotation processor için Java 21+ uyumluluğu
+            options.compilerArgs.addAll([
+                '-parameters',
+                '-Xlint:unchecked'
+            ])
+            // Annotation processor'ların doğru çalışması için
+            options.annotationProcessorPath = configurations.annotationProcessor
+        }
+    }
+    apply plugin: 'java'
+    
+    // ExceptionHandlerService için Spring Boot plugin'ini uygulama
+    if (project.name != 'ExceptionHandlerService') {
+    apply plugin: 'org.springframework.boot'
+    }
+    
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+
+    buildscript {
+        dependencies {
+            classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}")
+        }
+    }
+    
+    // ExceptionHandlerService için bootJar task'ını devre dışı bırak (eğer plugin uygulanmışsa)
+    afterEvaluate {
+        if (project.name == 'ExceptionHandlerService') {
+            if (tasks.findByName('bootJar') != null) {
+                tasks.named('bootJar') {
+                    enabled = false
+                }
+            }
+            tasks.named('jar') {
+                enabled = true
+                archiveClassifier = ''
+            }
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+    dependencies {
+        /**
+         * bütün projeye yayılacak bağımlıkları yazıyoruz.
+         * Yazarken libs içindekileri çekiyoruz.
+         * Bütün projelere entegre gelecek.
+         */
+        implementation libs.springBootWeb
+
+        implementation libs.nettyResolverDnsNativeMacos
+
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+        implementation libs.lombok
+
+
+
+        implementation libs.mapStruct
+        annotationProcessor libs.mapStructProcessor
+        implementation  libs.swaggerApi
+
+    //    implementation  libs.postgreSql
+        implementation  libs.log4jApi
+        implementation  libs.log4jCore
+        implementation  libs.log4jSlf4jImpl
+        implementation  libs.jwt
+
+        implementation libs.springCloudOpenFeign
+        implementation libs.springCloudConfigClient
+
+        implementation libs.springBootActuator
+
+        implementation libs.springBootValidation
+
+        implementation libs.bridgeBrave
+        implementation libs.reporterBrave
+        implementation libs.observation
+
+
+        implementation libs.springCloudEurekaClient
+
+        if (project.name != 'ExceptionHandlerService') {
+        implementation libs.redis
+        implementation libs.kafka
+        }
+
+        implementation libs.resilience4jCircuitBreaker
+
+    }
+}
+
+
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}

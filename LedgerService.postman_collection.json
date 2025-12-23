@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "ffe386e9-4c68-45e1-8c5f-7cf12c211736",
+		"name": "LedgerService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "77926",
+		"_collection_link": "https://interstellar-capsule-247109.postman.co/workspace/Java-World~f73524f9-dba0-4763-8e27-e4f79695829d/collection/77926-ffe386e9-4c68-45e1-8c5f-7cf12c211736?action=share&source=collection_link&creator=77926"
+	},
+	"item": [
+		{
+			"name": "Create Ledger 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"accountId\": 1,\n  \"ledgerIbanNumber\": 1001,\n  \"balance\": 10000.00,\n  \"currency\": \"TL\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ledger 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"accountId\": 2,\n  \"ledgerIbanNumber\": 1002,\n  \"balance\": 5000.00,\n  \"currency\": \"TL\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ledger 3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"accountId\": 3,\n  \"ledgerIbanNumber\": 1003,\n  \"balance\": 7000.00,\n  \"currency\": \"TL\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ledgers By Account 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/account/{{accountId}}",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"account",
+						"{{accountId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ledgers By Account  page",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/account?page={{page}}&size={{size}}",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"account"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "{{page}}"
+						},
+						{
+							"key": "size",
+							"value": "{{size}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Money 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fromAccount\": 1001,\n  \"toAccount\": 1002,\n  \"amount\": 200.00\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/ledger/transfer",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"ledger",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gatewayBaseUrl",
+			"value": "http://localhost:80"
+		},
+		{
+			"key": "token1",
+			"value": ""
+		},
+		{
+			"key": "accountId",
+			"value": "1"
+		},
+		{
+			"key": "page",
+			"value": "0"
+		},
+		{
+			"key": "size",
+			"value": "5"
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "http://localhost:8180"
+		},
+		{
+			"key": "keycloakRealm",
+			"value": "master"
+		},
+		{
+			"key": "clientId",
+			"value": "account-service"
+		},
+		{
+			"key": "clientSecret",
+			"value": "CHANGE_ME"
+		},
+		{
+			"key": "username",
+			"value": "1234@example.com"
+		},
+		{
+			"key": "password",
+			"value": "P@ssw0rd!"
+		},
+		{
+			"key": "token2",
+			"value": ""
+		},
+		{
+			"key": "token3",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+group = 'com.mimaraslan'
+version = 'v.1.0.0'
+
+tasks.named('jar') {
+    enabled = true
+    archiveClassifier = ''
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework:spring-web'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

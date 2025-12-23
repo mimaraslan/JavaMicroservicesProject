@@ -1,0 +1,11 @@
+dependencies {
+    implementation libs.postgreSql
+    implementation libs.springBootDataJpa
+    implementation libs.springBootValidation
+    implementation libs.jwt
+    implementation libs.keycloakAdminClient
+    implementation libs.redisCache
+
+    implementation project(':ExceptionHandlerService')
+
+}

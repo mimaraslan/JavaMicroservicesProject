@@ -1,0 +1,87 @@
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    # Config Server bağlantısı geçici olarak devre dışı (route'lar local'den yüklenecek)
+    # config:
+    #   uri: http://config-server:8888
+    gateway:
+      actuator:
+        verbose:
+          enabled: true
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: account-service
+          uri: lb://account-service-application
+          predicates:
+            - Path=/account/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: account
+                fallbackUri: forward:/fallback/account
+        - id: ledger-service
+          uri: lb://ledger-service-application
+          predicates:
+            - Path=/ledger/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ledger
+                fallbackUri: forward:/fallback/ledger
+        - id: fraud-service
+          uri: lb://fraud-service-application
+          predicates:
+            - Path=/fraud/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: fraud
+                fallbackUri: forward:/fallback/fraud
+        - id: notification-service
+          uri: lb://notification-service-application
+          predicates:
+            - Path=/notification/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: notification
+                fallbackUri: forward:/fallback/notification
+  config:
+    import: "optional:configserver:"
+    fail-fast: false
+  application:
+    name:  api-gateway-service-application
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Config Server'dan okunamazsa yerel fallback
+          issuer-uri: http://keycloak:8080/realms/master
+          jwk-set-uri: http://keycloak:8080/realms/master/protocol/openid-connect/certs
+
+server:
+  port: 80
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://eureka-server:8761/eureka/}
+
+management:
+  tracing:
+    sampling:
+      probability: 1
+  endpoints:
+    web:
+      exposure:
+        include: gateway,health,info
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.loadbalancer: DEBUG
+    com.netflix.discovery: DEBUG

@@ -1,0 +1,9 @@
+dependencies {
+    implementation libs.postgreSql
+    implementation libs.springBootDataJpa
+    implementation libs.springRetry
+    implementation libs.springAop
+    implementation libs.jwt
+
+    implementation project(':ExceptionHandlerService')
+}

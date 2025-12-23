@@ -1,0 +1,309 @@
+{
+	"info": {
+		"_postman_id": "a160589b-bea8-4022-8dd6-d0ad5c9b7c98",
+		"name": "AccountService_V4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16541069"
+	},
+	"item": [
+		{
+			"name": "Register 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"mimar@gmail.com\",\n  \"password\": \"111\",\n  \"username\": \"user1\",\n  \"firstName\": \"Ali\",\n  \"lastName\": \"Veli\",\n  \"phoneNumber\": \"1111\",\n  \"address\": \"Ankara\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/register",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"mimar@gmail.com\",\n  \"password\": \"111\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/login",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Keycloak Token (Password Grant) 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{clientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{clientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloakUrl}}/realms/{{keycloakRealm}}/protocol/openid-connect/token",
+					"host": [
+						"{{keycloakUrl}}"
+					],
+					"path": [
+						"realms",
+						"{{keycloakRealm}}",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Accounts (via Gateway)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account By Id (via Gateway) 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/1",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account (via Gateway) 1",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"ayten_baysal@hotmail.com\",\n  \"username\": \"ayten\",\n  \"password\": \"2222\",\n  \"firstName\": \"Ahmet\",\n  \"lastName\": \"Mehmet\",\n  \"phoneNumber\": \"111\",\n  \"address\": \"Milan\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/1",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout (via Gateway) 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"1234@example.com\"\n}"
+				},
+				"url": {
+					"raw": "{{gatewayBaseUrl}}/account/logout",
+					"host": [
+						"{{gatewayBaseUrl}}"
+					],
+					"path": [
+						"account",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "gatewayBaseUrl",
+			"value": "http://localhost:80"
+		},
+		{
+			"key": "accountId",
+			"value": "1"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "http://localhost:8180"
+		},
+		{
+			"key": "keycloakRealm",
+			"value": "master"
+		},
+		{
+			"key": "clientId",
+			"value": "account-service"
+		},
+		{
+			"key": "clientSecret",
+			"value": "CHANGE_ME"
+		},
+		{
+			"key": "username",
+			"value": "1234@example.com"
+		},
+		{
+			"key": "password",
+			"value": "1234"
+		}
+	]
+}
