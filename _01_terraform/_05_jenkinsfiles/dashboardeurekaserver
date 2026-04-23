@@ -24,8 +24,10 @@ pipeline {
         stage("Docker Image Build") {
             steps {
                 dir("${MODULE_DIR}") {
-                    sh 'docker build -t ${IMAGE_NAME} .'
-                }
+                    sh 'docker system prune -f'
+                    sh 'docker container prune -f'
+                    sh 'docker build -t ${IMAGE_NAME} .'               
+                 }
             }
         }
 
