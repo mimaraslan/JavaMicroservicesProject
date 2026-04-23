@@ -34,3 +34,7 @@ out/
 
 ### VS Code ###
 .vscode/
+_01_terraform/_01_s3-buckets/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/terraform-provider-aws_v6.42.0_x5.exe
+_01_terraform/_01_s3-buckets/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
+_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
+/_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64

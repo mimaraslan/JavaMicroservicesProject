@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "configserverlocal"
+        MODULE_DIR = "ConfigServerLocal"
+        REPO_URL = "242201296943.dkr.ecr.us-east-1.amazonaws.com/configserverlocal"
+        YAML_FILE = "configserverlocal.yaml"
+    }
+
+    stages {
+        stage('Cleaning Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Docker Image Build") {
+            steps {
+                dir("${MODULE_DIR}") {
+                    sh 'docker build -t ${IMAGE_NAME} .'
+                }
+            }
+        }
+
+        stage("ECR Image Pushing") {
+            steps {
+                sh '''
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 242201296943.dkr.ecr.us-east-1.amazonaws.com
+                    docker tag ${IMAGE_NAME}:latest ${REPO_URL}:${BUILD_NUMBER}
+                    docker push ${REPO_URL}:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Update Deployment file') {
+            steps {
+                dir('_01_terraform/kubernetes-files') {
+                    sh 'sed -i "s#image:.*#image: ${REPO_URL}:${BUILD_NUMBER}#g" ${YAML_FILE}'
+                }
+            }
+        }
+    }
+}

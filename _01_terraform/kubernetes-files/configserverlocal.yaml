@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-server-local
+  template:
+    metadata:
+      labels:
+        app: config-server-local
+    spec:
+      containers:
+      - name: config-server-local
+        image: 242201296943.dkr.ecr.us-east-1.amazonaws.com/configserverlocal:1
+        ports:
+        - containerPort: 8888
+        env:
+        - name: SERVER_PORT
+          value: "8888"
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: "http://dashboard-eureka-server:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-server-local
+spec:
+  type: ClusterIP
+  selector:
+    app: config-server-local
+  ports:
+  - name: http
+    port: 8888
+    targetPort: 8888
