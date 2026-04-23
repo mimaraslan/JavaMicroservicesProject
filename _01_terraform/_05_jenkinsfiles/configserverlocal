@@ -7,7 +7,7 @@ pipeline {
         GIT_USER_NAME = "mimaraslan"   
         IMAGE_NAME = "configserverlocal"
         MODULE_DIR = "ConfigServerLocal"
-        REPO_URL = "242201296943.dkr.ecr.us-east-1.amazonaws.com/configserverlocal"
+        REPO_URL = "405834051687.dkr.ecr.us-east-1.amazonaws.com/configserverlocal"
         YAML_FILE = "configserverlocal.yaml"
     }
 
@@ -38,7 +38,7 @@ pipeline {
         stage("ECR Image Pushing") {
             steps {
                 sh '''
-                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 242201296943.dkr.ecr.us-east-1.amazonaws.com
+                    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 405834051687.dkr.ecr.us-east-1.amazonaws.com
                     docker tag ${IMAGE_NAME}:latest ${REPO_URL}:${BUILD_NUMBER}
                     docker push ${REPO_URL}:${BUILD_NUMBER}
                 '''
