@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "my-devops-lab-bucket-1"
+    bucket = "my-devops-lab-bucket-2"
     key    = "ecr/terraform.tfstate"
     region = "us-east-1"
   }
