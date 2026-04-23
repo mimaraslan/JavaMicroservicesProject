@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -14,6 +13,7 @@ pipeline {
         stage('Checkout from Git') {
             steps {
                 echo 'Checking out Git repository...'
+                checkout scm 
             }
         }
 
@@ -23,9 +23,10 @@ pipeline {
             }
         }
 
+     // BURASI KRİTİK: GitHub'daki tam yolu kullanıyoruz
         stage('Terraform init') {
             steps {
-                dir('ecr-terraform') {
+                dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform init --reconfigure'
                 }
             }
@@ -33,7 +34,7 @@ pipeline {
 
         stage('Terraform validate') {
             steps {
-                dir('ecr-terraform') {
+                dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform validate'
                 }
             }
@@ -41,7 +42,7 @@ pipeline {
 
         stage('Terraform plan') {
             steps {
-                dir('ecr-terraform') {
+                dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform plan'
                 }
             }
@@ -52,7 +53,7 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                dir('ecr-terraform') {
+                dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -63,7 +64,7 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                dir('ecr-terraform') {
+                dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
