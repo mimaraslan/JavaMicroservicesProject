@@ -12,7 +12,10 @@ pipeline {
     stages {
         stage('Checkout from Git') {
             steps {
+                // Eğer Jenkins projesinde SCM ayarlıysa burası otomatik dolacaktır.
+                // Manuel checkout gerekiyorsa buraya git(url: '...') eklenebilir.
                 echo 'Checking out Git repository...'
+                checkout scm 
             }
         }
 
@@ -22,9 +25,10 @@ pipeline {
             }
         }
 
+        // BURASI KRİTİK: GitHub'daki tam yolu kullanıyoruz
         stage('Terraform init') {
             steps {
-                dir('eks-terraform') {
+                dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform init --reconfigure'
                 }
             }
@@ -32,7 +36,7 @@ pipeline {
 
         stage('Terraform validate') {
             steps {
-                dir('eks-terraform') {
+                dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform validate'
                 }
             }
@@ -40,7 +44,7 @@ pipeline {
 
         stage('Terraform plan') {
             steps {
-                dir('eks-terraform') {
+                dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform plan'
                 }
             }
@@ -51,7 +55,7 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                dir('eks-terraform') {
+                dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -62,7 +66,7 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                dir('eks-terraform') {
+                dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
