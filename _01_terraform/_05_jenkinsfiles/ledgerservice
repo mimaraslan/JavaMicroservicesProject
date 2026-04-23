@@ -41,7 +41,7 @@ pipeline {
 
         stage('Update Deployment file') {
             steps {
-                dir('_01_terraform/kubernetes-files') {
+                dir('_01_terraform/_06_kubernetes-files') {
                     sh 'sed -i "s#image:.*#image: ${REPO_URL}:${BUILD_NUMBER}#g" ${YAML_FILE}'
                 }
             }
