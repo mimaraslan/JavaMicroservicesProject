@@ -24,14 +24,13 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/mimaraslan/JavaMicroservicesProject.git'
             }
         }
-
-        stage("Docker Image Build") {
+stage("Docker Image Build") {
             steps {
-                dir("${MODULE_DIR}") {
-                    sh 'docker system prune -f'
-                    sh 'docker container prune -f'
-                    sh 'docker build -t ${IMAGE_NAME} .'               
-                 }
+                sh 'docker system prune -f'
+                sh 'docker container prune -f'
+                
+                // -f ile Dockerfile'ın yerini gösteriyoruz, '.' ile ana dizini bağlam (context) yapıyoruz
+                sh 'docker build -t ${IMAGE_NAME} -f ${MODULE_DIR}/Dockerfile .'
             }
         }
 

@@ -27,7 +27,6 @@ pipeline {
 
 stage("Docker Image Build") {
             steps {
-                // dir içinden çıkıyoruz, ana dizinde çalışıyoruz
                 sh 'docker system prune -f'
                 sh 'docker container prune -f'
                 
