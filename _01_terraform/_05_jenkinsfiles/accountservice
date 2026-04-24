@@ -70,6 +70,6 @@ stage("Docker Image Build") {
                 }
             }
         }
-
- } // stages bloğu kapandı
-} // pipeline bloğu kapandı       
+ } 
+ 
+}     
