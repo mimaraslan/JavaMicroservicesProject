@@ -46,7 +46,7 @@ stage("Docker Image Build") {
 
 
   
-       stage('Update Deployment file') {
+         stage('Update Deployment file') {
             steps {
                 dir('_01_terraform/_06_kubernetes-files') {
                     withCredentials([string(credentialsId: 'MyTokenGitHub', variable: 'git_token')]) {
