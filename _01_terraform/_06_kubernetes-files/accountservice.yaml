@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: account-service
-        image: 405834051687.dkr.ecr.us-east-1.amazonaws.com/accountservice:8
+        image: 405834051687.dkr.ecr.us-east-1.amazonaws.com/accountservice:9
         ports:
         - containerPort: 9591
         env:
