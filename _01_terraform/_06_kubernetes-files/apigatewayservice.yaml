@@ -19,12 +19,16 @@ spec:
         ports:
         - containerPort: 80
         env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
         - name: SERVER_PORT
           value: "80"
         - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
           value: "http://dashboard-eureka-server:8761/eureka/"
         - name: SPRING_CLOUD_CONFIG_URI
           value: "http://config-server-local:8888"
+        - name: SPRING_CLOUD_CONFIG_FAIL_FAST
+          value: "false"
 ---
 apiVersion: v1
 kind: Service

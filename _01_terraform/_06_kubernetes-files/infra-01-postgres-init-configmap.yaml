@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb-scripts
+data:
+  00-create-databases.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
+      CREATE DATABASE "Micro_AccountServiceDB";
+      CREATE DATABASE "Micro_LedgerServiceDB";
+      CREATE DATABASE "Micro_FraudServiceDB";
+      CREATE DATABASE "Micro_NotificationServiceDB";
+      CREATE DATABASE "keycloak";
+    EOSQL

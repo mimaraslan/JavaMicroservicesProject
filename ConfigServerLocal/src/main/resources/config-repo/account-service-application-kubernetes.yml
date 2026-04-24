@@ -1,0 +1,24 @@
+# Kubernetes / EKS: cluster DNS ve servis isimleri (Config Server native repo)
+spring:
+  zipkin:
+    base-url: http://zipkin:9411/
+  datasource:
+    url: jdbc:postgresql://postgres:5432/Micro_AccountServiceDB
+    username: postgres
+    # Parola repoda tutulmaz; yalnızca ortam değişkeni POSTGRES_PASSWORD (K8s Secret) ile verilir.
+    password: ${POSTGRES_PASSWORD}
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://dashboard-eureka-server:8761/eureka/
+
+keycloak:
+  server-url: http://keycloak:8080
+  token-url: http://keycloak:8080/realms/master/protocol/openid-connect/token

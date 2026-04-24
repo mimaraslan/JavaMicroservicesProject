@@ -1,0 +1,27 @@
+spring:
+  zipkin:
+    base-url: http://zipkin:9411/
+  data:
+    redis:
+      host: redis
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/master
+          jwk-set-uri: http://keycloak:8080/realms/master/protocol/openid-connect/certs
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://dashboard-eureka-server:8761/eureka/
+
+management:
+  health:
+    circuitbreakers:
+      enabled: false
+    ratelimiters:
+      enabled: false

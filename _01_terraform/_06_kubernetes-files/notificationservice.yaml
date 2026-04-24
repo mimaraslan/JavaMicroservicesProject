@@ -19,12 +19,21 @@ spec:
         ports:
         - containerPort: 9594
         env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
         - name: SERVER_PORT
           value: "9594"
         - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
           value: "http://dashboard-eureka-server:8761/eureka/"
         - name: SPRING_CLOUD_CONFIG_URI
           value: "http://config-server-local:8888"
+        - name: SPRING_CLOUD_CONFIG_FAIL_FAST
+          value: "false"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: microservices-secrets
+              key: postgres-password
 ---
 apiVersion: v1
 kind: Service

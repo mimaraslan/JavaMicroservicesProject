@@ -1,0 +1,17 @@
+spring:
+  zipkin:
+    base-url: http://zipkin:9411/
+  datasource:
+    url: jdbc:postgresql://postgres:5432/Micro_NotificationServiceDB
+    username: postgres
+    # K8s: microservices-secrets → env POSTGRES_PASSWORD
+    password: ${POSTGRES_PASSWORD}
+  kafka:
+    bootstrap-servers: redpanda:9092
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://dashboard-eureka-server:8761/eureka/
