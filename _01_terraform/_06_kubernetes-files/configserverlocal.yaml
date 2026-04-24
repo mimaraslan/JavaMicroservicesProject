@@ -21,7 +21,7 @@ spec:
         env:
         - name: SERVER_PORT
           value: "8888"
-        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
           value: "http://dashboard-eureka-server:8761/eureka/"
 ---
 apiVersion: v1
