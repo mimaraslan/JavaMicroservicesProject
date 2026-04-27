@@ -158,7 +158,7 @@ resource "aws_eks_cluster" "eks" {
 # ---------------------------------------------------------
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = "project-eks-node-group"
+  node_group_name = "MyNodeGroup" # Node grubunun genel adı
   node_role_arn   = aws_iam_role.worker.arn
   subnet_ids      = [data.aws_subnet.subnet-1.id, data.aws_subnet.subnet-2.id]
   capacity_type   = "ON_DEMAND"
@@ -169,8 +169,10 @@ resource "aws_eks_node_group" "node-grp" {
     env = "dev"
   }
 
+  # EC2 makinelerinin konsoldaki ismi: MyNode
   tags = {
-    Name = "project-eks-node-group"
+    Name = "MyNode"
+    "kubernetes.io/cluster/${aws_eks_cluster.eks.name}" = "owned"
   }
 
   scaling_config {
