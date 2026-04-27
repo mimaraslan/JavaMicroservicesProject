@@ -5,28 +5,18 @@ pipeline {
         choice(
             name: 'ACTION',
             choices: ['apply', 'destroy'],
-            description: '🔧 Select the Terraform action to perform'
+            description: '🔧 Yapılacak işlemi seçin (Dikkat: destroy tüm EKS yapısını siler!)'
         )
     }
 
     stages {
         stage('Checkout from Git') {
             steps {
-                // Eğer Jenkins projesinde SCM ayarlıysa burası otomatik dolacaktır.
-                // Manuel checkout gerekiyorsa buraya git(url: '...') eklenebilir.
-                echo 'Checking out Git repository...'
                 checkout scm 
             }
         }
 
-        stage('Terraform version') {
-            steps {
-                sh 'terraform --version'
-            }
-        }
-
-        // BURASI KRİTİK: GitHub'daki tam yolu kullanıyoruz
-        stage('Terraform init') {
+        stage('Terraform Init') {
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform init --reconfigure'
@@ -34,42 +24,46 @@ pipeline {
             }
         }
 
-        stage('Terraform validate') {
+        stage('Terraform Plan') {
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
-                    sh 'terraform validate'
+                    // Planı bir dosyaya yazıyoruz
+                    sh 'terraform plan -out=tfplan'
                 }
             }
         }
 
-        stage('Terraform plan') {
+        stage('Terraform Apply') {
+            when { expression { params.ACTION == 'apply' } }
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
-                    sh 'terraform plan'
+                    // Sadece hazırlanan planı uyguluyoruz
+                    sh 'terraform apply -auto-approve tfplan'
                 }
             }
         }
 
-        stage('Terraform apply') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
+        stage('Terraform Destroy Confirm') {
+            when { expression { params.ACTION == 'destroy' } }
             steps {
-                dir('_01_terraform/_03_eks-terraform') {
-                    sh 'terraform apply -auto-approve'
-                }
+                // Silme işlemi öncesi manuel onay (Opsiyonel)
+                input message: "EKS Cluster'ı silmek istediğinizden emin misiniz?", ok: "Evet, Sil"
             }
         }
 
-        stage('Terraform destroy') {
-            when {
-                expression { params.ACTION == 'destroy' }
-            }
+        stage('Terraform Destroy') {
+            when { expression { params.ACTION == 'destroy' } }
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
+        }
+    }
+    
+    post {
+        always {
+            echo "İşlem tamamlandı. Durum: ${currentBuild.result}"
         }
     }
 }

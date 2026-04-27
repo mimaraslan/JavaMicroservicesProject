@@ -53,7 +53,7 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-# MEVCUT POLİTİKAYI KONTROL ET: "Varsa kullan" mantığı için önce okuyoruz.
+# MEVCUT POLİTİKAYI OKUMA (EntityAlreadyExists hatasını önler)
 data "aws_iam_policy" "autoscaler" {
   name = "mydemo-eks-autoscaler-policy1"
 }
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy_attachment" "S3ReadOnlyAccess" {
   role       = aws_iam_role.worker.name
 }
 
-# Mevcut olan autoscaler politikasını role bağlıyoruz.
+# Mevcut olan autoscaler politikasını role bağlama
 resource "aws_iam_role_policy_attachment" "autoscaler" {
   policy_arn = data.aws_iam_policy.autoscaler.arn
   role       = aws_iam_role.worker.name
@@ -96,7 +96,7 @@ resource "aws_iam_instance_profile" "worker" {
 }
 
 # ---------------------------------------------------------
-# 3. VPC and Subnet Data Sources (Mevcut Jumphost Altyapısı)
+# 3. VPC and Subnet Data Sources (Jumphost-vpc altyapısı)
 # ---------------------------------------------------------
 data "aws_vpc" "main" {
   tags = {
@@ -154,7 +154,7 @@ resource "aws_eks_cluster" "eks" {
 }
 
 # ---------------------------------------------------------
-# 5. EKS Node Group
+# 5. EKS Node Group (İşçi Düğümler)
 # ---------------------------------------------------------
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
