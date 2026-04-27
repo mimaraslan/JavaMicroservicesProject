@@ -205,7 +205,7 @@ resource "aws_eks_node_group" "node-grp" {
 resource "aws_eks_access_entry" "aslan_admin" {
   cluster_name      = aws_eks_cluster.eks.name
 
-  # Bu kısmı kullanıcı kendine göre düzenle.
+  # Bu kısmı AWS kullanıcısı kendine göre düzenleyecek.
   principal_arn     = "arn:aws:iam::405834051687:user/mydemouser"
   
   type              = "STANDARD"
@@ -215,7 +215,7 @@ resource "aws_eks_access_policy_association" "aslan_admin_policy" {
   cluster_name  = aws_eks_cluster.eks.name
   policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
 
-  # Bu kısmı kullanıcı kendine göre düzenle.
+  # Bu kısmı AWS kullanıcısı kendine göre düzenleyecek.
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
 
   access_scope {
