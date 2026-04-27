@@ -4,6 +4,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "bucket1" {
   bucket = "my-devops-lab-bucket-1"
+  force_destroy = true
 
   tags = {
     Name        = "my-devops-lab-bucket-1"
@@ -20,6 +21,7 @@ resource "aws_s3_bucket_versioning" "bucket1_versioning" {
 
 resource "aws_s3_bucket" "bucket2" {
   bucket = "my-devops-lab-bucket-2"
+  force_destroy = true
 
   tags = {
     Name        = "my-devops-lab-bucket-2"
