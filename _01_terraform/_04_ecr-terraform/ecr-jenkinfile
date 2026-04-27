@@ -5,34 +5,34 @@ pipeline {
         choice(
             name: 'ACTION',
             choices: ['apply', 'destroy'],
-            description: '🔧 Select the Terraform action to perform (apply = create/update, destroy = delete all)'
+            description: '🔧 Yapılacak işlemi seçin (apply: ECR Repolarını oluşturur, destroy: Tüm repoları siler!)'
         )
     }
 
     stages {
         stage('Checkout from Git') {
             steps {
-                echo 'Checking out Git repository...'
+                echo 'GitHub repository çekiliyor...'
                 checkout scm 
             }
         }
 
-        stage('Terraform version') {
+        stage('Terraform Version Check') {
             steps {
                 sh 'terraform --version'
             }
         }
 
-     // BURASI KRİTİK: GitHub'daki tam yolu kullanıyoruz
-        stage('Terraform init') {
+        stage('Terraform Init') {
             steps {
                 dir('_01_terraform/_04_ecr-terraform') {
+                    // Backend yapılandırmasını tazeleyerek başlatıyoruz
                     sh 'terraform init --reconfigure'
                 }
             }
         }
 
-        stage('Terraform validate') {
+        stage('Terraform Validate') {
             steps {
                 dir('_01_terraform/_04_ecr-terraform') {
                     sh 'terraform validate'
@@ -40,26 +40,39 @@ pipeline {
             }
         }
 
-        stage('Terraform plan') {
+        stage('Terraform Plan') {
             steps {
                 dir('_01_terraform/_04_ecr-terraform') {
-                    sh 'terraform plan'
+                    // EKS'de yaptığımız gibi planı bir dosyaya kaydediyoruz
+                    // Bu, planlanan ile uygulananın aynı olmasını garanti eder.
+                    sh 'terraform plan -out=tfplan_ecr'
                 }
             }
         }
 
-        stage('Terraform apply') {
+        stage('Terraform Apply') {
             when {
                 expression { params.ACTION == 'apply' }
             }
             steps {
                 dir('_01_terraform/_04_ecr-terraform') {
-                    sh 'terraform apply -auto-approve'
+                    // Hazırlanan plan dosyasını uyguluyoruz
+                    sh 'terraform apply -auto-approve tfplan_ecr'
                 }
             }
         }
 
-        stage('Terraform destroy') {
+        stage('Terraform Destroy Confirm') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                // ECR repolarını silmek tehlikelidir (İmajlar gider), onay alıyoruz.
+                input message: "Tüm ECR depolarını ve içindeki imajları silmek istediğinizden emin misiniz?", ok: "Evet, Hepsini Sil"
+            }
+        }
+
+        stage('Terraform Destroy') {
             when {
                 expression { params.ACTION == 'destroy' }
             }
@@ -68,6 +81,20 @@ pipeline {
                     sh 'terraform destroy -auto-approve'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "--------------------------------------------------"
+            echo "ECR İşlemi Tamamlandı. Durum: ${currentBuild.result}"
+            echo "--------------------------------------------------"
+        }
+        success {
+            echo "✅ ECR altyapısı başarıyla güncellendi."
+        }
+        failure {
+            echo "❌ ECR işlemi sırasında bir hata oluştu. Logları kontrol edin."
         }
     }
 }
