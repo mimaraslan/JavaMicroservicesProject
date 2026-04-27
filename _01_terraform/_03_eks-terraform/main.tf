@@ -53,24 +53,9 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-resource "aws_iam_policy" "autoscaler" {
-  name = "yaswanth-eks-autoscaler-policy1"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Action = [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeTags",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup",
-        "ec2:DescribeLaunchTemplateVersions"
-      ],
-      Effect   = "Allow",
-      Resource = "*"
-    }]
-  })
+# MEVCUT POLİTİKAYI OKUMA (Doğru Kullanım: Sadece name verilir)
+data "aws_iam_policy" "autoscaler" {
+  name = "mydemo-eks-autoscaler-policy1"
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
@@ -111,7 +96,7 @@ resource "aws_iam_instance_profile" "worker" {
 }
 
 # ---------------------------------------------------------
-# 3. VPC and Subnet Data Sources (Jumphost-vpc altyapısı)
+# 3. VPC and Subnet Data Sources
 # ---------------------------------------------------------
 data "aws_vpc" "main" {
   tags = {
@@ -155,6 +140,12 @@ resource "aws_eks_cluster" "eks" {
     security_group_ids = [data.aws_security_group.selected.id]
   }
 
+  # Yeni Nesil Erişim Yapılandırması (Otomatik bağlantı için kritik)
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   tags = {
     Name        = "mydemo-eks-cluster"
     Environment = "dev"
@@ -184,11 +175,8 @@ resource "aws_eks_node_group" "node-grp" {
     env = "dev"
   }
 
-
-  # AWS Konsolunda "Name" sütununda MyNode yazar.
   tags = {
-     # Name = "project-eks-node-group"
-     Name = "MyNode"
+    Name = "MyNode"
     "kubernetes.io/cluster/${aws_eks_cluster.eks.name}" = "owned"
   }
 
@@ -212,7 +200,31 @@ resource "aws_eks_node_group" "node-grp" {
 }
 
 # ---------------------------------------------------------
-# 6. OIDC Provider
+# 6. Kullanıcı Erişimi (Eskisi gibi otomatik bağlanmanı sağlar)
+# ---------------------------------------------------------
+resource "aws_eks_access_entry" "aslan_admin" {
+  cluster_name      = aws_eks_cluster.eks.name
+
+  # Bu kısmı kullanıcı kendine göre düzenle.
+  principal_arn     = "arn:aws:iam::405834051687:user/mydemouser"
+  
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "aslan_admin_policy" {
+  cluster_name  = aws_eks_cluster.eks.name
+  policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
+
+  # Bu kısmı kullanıcı kendine göre düzenle.
+  principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+# ---------------------------------------------------------
+# 7. OIDC Provider
 # ---------------------------------------------------------
 data "aws_eks_cluster" "eks_oidc" {
   name = aws_eks_cluster.eks.name
