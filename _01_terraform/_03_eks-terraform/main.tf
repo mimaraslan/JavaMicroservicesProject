@@ -2,9 +2,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# ----------------------------
-# IAM Role for EKS Cluster
-# ----------------------------
+# ---------------------------------------------------------
+# 1. IAM Role for EKS Cluster (Control Plane)
+# ---------------------------------------------------------
 resource "aws_iam_role" "master" {
   name = "mydemo-eks-master1"
 
@@ -35,9 +35,9 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
   role       = aws_iam_role.master.name
 }
 
-# ----------------------------
-# IAM Role for Worker Nodes
-# ----------------------------
+# ---------------------------------------------------------
+# 2. IAM Role for Worker Nodes
+# ---------------------------------------------------------
 resource "aws_iam_role" "worker" {
   name = "mydemo-eks-worker1"
 
@@ -53,24 +53,9 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-resource "aws_iam_policy" "autoscaler" {
+# MEVCUT POLİTİKAYI KONTROL ET: "Varsa kullan" mantığı için önce okuyoruz.
+data "aws_iam_policy" "autoscaler" {
   name = "mydemo-eks-autoscaler-policy1"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Action = [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeTags",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup",
-        "ec2:DescribeLaunchTemplateVersions"
-      ],
-      Effect   = "Allow",
-      Resource = "*"
-    }]
-  })
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
@@ -98,8 +83,9 @@ resource "aws_iam_role_policy_attachment" "S3ReadOnlyAccess" {
   role       = aws_iam_role.worker.name
 }
 
+# Mevcut olan autoscaler politikasını role bağlıyoruz.
 resource "aws_iam_role_policy_attachment" "autoscaler" {
-  policy_arn = aws_iam_policy.autoscaler.arn
+  policy_arn = data.aws_iam_policy.autoscaler.arn
   role       = aws_iam_role.worker.name
 }
 
@@ -109,9 +95,9 @@ resource "aws_iam_instance_profile" "worker" {
   role       = aws_iam_role.worker.name
 }
 
-# ----------------------------
-# VPC and Subnet Data Sources
-# ----------------------------
+# ---------------------------------------------------------
+# 3. VPC and Subnet Data Sources (Mevcut Jumphost Altyapısı)
+# ---------------------------------------------------------
 data "aws_vpc" "main" {
   tags = {
     Name = "Jumphost-vpc"
@@ -142,9 +128,9 @@ data "aws_security_group" "selected" {
   }
 }
 
-# ----------------------------
-# EKS Cluster
-# ----------------------------
+# ---------------------------------------------------------
+# 4. EKS Cluster
+# ---------------------------------------------------------
 resource "aws_eks_cluster" "eks" {
   name     = "project-eks"
   role_arn = aws_iam_role.master.arn
@@ -167,18 +153,16 @@ resource "aws_eks_cluster" "eks" {
   ]
 }
 
-
-# ----------------------------
-# EKS Node Group
-# ----------------------------
+# ---------------------------------------------------------
+# 5. EKS Node Group
+# ---------------------------------------------------------
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = var.node_group_name
+  node_group_name = "project-eks-node-group"
   node_role_arn   = aws_iam_role.worker.arn
   subnet_ids      = [data.aws_subnet.subnet-1.id, data.aws_subnet.subnet-2.id]
   capacity_type   = "ON_DEMAND"
   disk_size       = 20
-#  instance_types  = ["t3.xlarge"]
   instance_types  = ["t2.large"]
 
   labels = {
@@ -190,11 +174,9 @@ resource "aws_eks_node_group" "node-grp" {
   }
 
   scaling_config {
- #   desired_size = 3
     desired_size = 1
     max_size     = 10
     min_size     = 1
-   # min_size     = 2
   }
 
   update_config {
@@ -210,9 +192,9 @@ resource "aws_eks_node_group" "node-grp" {
   ]
 }
 
-# ----------------------------
-# OIDC Provider for ServiceAccount IAM Roles
-# ----------------------------
+# ---------------------------------------------------------
+# 6. OIDC Provider
+# ---------------------------------------------------------
 data "aws_eks_cluster" "eks_oidc" {
   name = aws_eks_cluster.eks.name
 }
