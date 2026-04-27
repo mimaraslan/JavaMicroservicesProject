@@ -5,6 +5,8 @@ provider "aws" {
 # ---------------------------------------------------------
 # 1. IAM Role for EKS Cluster (Control Plane)
 # ---------------------------------------------------------
+# Bu rol, AWS EKS servisinin (Control Plane) senin adına 
+# EC2, ELB gibi diğer AWS servislerini yönetmesini sağlar.
 resource "aws_iam_role" "master" {
   name = "mydemo-eks-master1"
 
@@ -20,6 +22,7 @@ resource "aws_iam_role" "master" {
   })
 }
 
+# Cluster'ın çalışması için gerekli temel AWS yönetilen politikalarını role bağlıyoruz.
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.master.name
@@ -38,6 +41,8 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
 # ---------------------------------------------------------
 # 2. IAM Role for Worker Nodes
 # ---------------------------------------------------------
+# Bu rol, worker node'ların (EC2 makineleri) cluster'a dahil olabilmesi
+# ve log gönderme, imaj çekme gibi işlemleri yapabilmesi içindir.
 resource "aws_iam_role" "worker" {
   name = "mydemo-eks-worker1"
 
@@ -53,7 +58,7 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-# Data yerine Resource yaparak politikayı biz oluşturuyoruz.
+# Node'ların otomatik ölçeklenmesi (Autoscaling) için özel politika oluşturuyoruz.
 resource "aws_iam_policy" "autoscaler" {
   name        = "mydemo-eks-autoscaler-policy1"
   description = "EKS Autoscaler policy"
@@ -78,6 +83,7 @@ resource "aws_iam_policy" "autoscaler" {
   })
 }
 
+# Worker Node'lar için gerekli standart AWS politikalarını bağlıyoruz.
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.worker.name
@@ -103,12 +109,13 @@ resource "aws_iam_role_policy_attachment" "S3ReadOnlyAccess" {
   role       = aws_iam_role.worker.name
 }
 
-# Politikayı role bağlama (Resource'dan gelen ARN kullanılıyor)
+# Oluşturduğumuz autoscaler politikasını worker rolüne bağlıyoruz.
 resource "aws_iam_role_policy_attachment" "autoscaler" {
   policy_arn = aws_iam_policy.autoscaler.arn
   role       = aws_iam_role.worker.name
 }
 
+# EC2 makinelerinin bu rolü kullanabilmesi için instance profile oluşturuyoruz.
 resource "aws_iam_instance_profile" "worker" {
   depends_on = [aws_iam_role.worker]
   name       = "mydemo-eks-worker-profile1"
@@ -118,6 +125,7 @@ resource "aws_iam_instance_profile" "worker" {
 # ---------------------------------------------------------
 # 3. VPC and Subnet Data Sources
 # ---------------------------------------------------------
+# Mevcut olan ağ altyapısını (VPC ve Subnetler) etiketlerine göre bulup okuyoruz.
 data "aws_vpc" "main" {
   tags = {
     Name = "mydemo-vpc"
@@ -151,6 +159,7 @@ data "aws_security_group" "selected" {
 # ---------------------------------------------------------
 # 4. EKS Cluster
 # ---------------------------------------------------------
+# Kubernetes yönetim panelini (Control Plane) kuruyoruz.
 resource "aws_eks_cluster" "eks" {
   name     = "project-eks"
   role_arn = aws_iam_role.master.arn
@@ -160,6 +169,8 @@ resource "aws_eks_cluster" "eks" {
     security_group_ids = [data.aws_security_group.selected.id]
   }
 
+  # Yeni nesil erişim modu: Hem API üzerinden hem ConfigMap üzerinden erişim sağlar.
+  # bootstrap_cluster_creator_admin_permissions: Cluster'ı kuran Jenkins'e otomatik admin yetkisi verir.
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
     bootstrap_cluster_creator_admin_permissions = true
@@ -181,6 +192,7 @@ resource "aws_eks_cluster" "eks" {
 # ---------------------------------------------------------
 # 5. EKS Node Group
 # ---------------------------------------------------------
+# Cluster üzerinde pod'ların çalışacağı gerçek EC2 makinelerini (Worker Node) kuruyoruz.
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
   node_group_name = "project-eks-node-group"
@@ -194,6 +206,7 @@ resource "aws_eks_node_group" "node-grp" {
     env = "dev"
   }
 
+  # MyNode etiketi sayesinde EC2 panelinde makineleri bu isimle görürsün.
   tags = {
     Name = "MyNode"
     "kubernetes.io/cluster/${aws_eks_cluster.eks.name}" = "owned"
@@ -219,17 +232,20 @@ resource "aws_eks_node_group" "node-grp" {
 }
 
 # ---------------------------------------------------------
-# 6. Kullanıcı Erişimi
+# 6. Kullanıcı Erişimi (Access Entry)
 # ---------------------------------------------------------
+# Senin (mydemouser) cluster'a dışarıdan bağlanabilmen için kapıyı açıyoruz.
 resource "aws_eks_access_entry" "aslan_admin" {
   cluster_name  = aws_eks_cluster.eks.name
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
   type          = "STANDARD"
 }
 
+# 'mydemouser' kullanıcısına Cluster Admin yetkisi atıyoruz.
+# policy_arn: EKS'ye özel Cluster Access Policy formatı kullanılmıştır.
 resource "aws_eks_access_policy_association" "aslan_admin_policy" {
   cluster_name  = aws_eks_cluster.eks.name
-  policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
 
   access_scope {
@@ -240,6 +256,8 @@ resource "aws_eks_access_policy_association" "aslan_admin_policy" {
 # ---------------------------------------------------------
 # 7. OIDC Provider
 # ---------------------------------------------------------
+# Kubernetes içindeki servislerin (pod'ların) AWS servislerine 
+# güvenli bir şekilde erişebilmesi için kimlik doğrulama altyapısı sağlar.
 data "aws_eks_cluster" "eks_oidc" {
   name = aws_eks_cluster.eks.name
 }
