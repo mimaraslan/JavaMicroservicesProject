@@ -53,9 +53,24 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-# MEVCUT POLİTİKAYI OKUMA (EntityAlreadyExists hatasını önler)
-data "aws_iam_policy" "autoscaler" {
-  name = "mydemo-eks-autoscaler-policy1"
+resource "aws_iam_policy" "autoscaler" {
+  name = "yaswanth-eks-autoscaler-policy1"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeTags",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup",
+        "ec2:DescribeLaunchTemplateVersions"
+      ],
+      Effect   = "Allow",
+      Resource = "*"
+    }]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
@@ -158,7 +173,7 @@ resource "aws_eks_cluster" "eks" {
 # ---------------------------------------------------------
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = "MyNodeGroup" # Node grubunun genel adı
+  node_group_name = "project-eks-node-group"
   node_role_arn   = aws_iam_role.worker.arn
   subnet_ids      = [data.aws_subnet.subnet-1.id, data.aws_subnet.subnet-2.id]
   capacity_type   = "ON_DEMAND"
@@ -169,9 +184,11 @@ resource "aws_eks_node_group" "node-grp" {
     env = "dev"
   }
 
-  # EC2 makinelerinin konsoldaki ismi: MyNode
+
+  # AWS Konsolunda "Name" sütununda MyNode yazar.
   tags = {
-    Name = "MyNode"
+     # Name = "project-eks-node-group"
+     Name = "MyNode"
     "kubernetes.io/cluster/${aws_eks_cluster.eks.name}" = "owned"
   }
 
