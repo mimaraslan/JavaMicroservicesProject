@@ -30,7 +30,7 @@ resource "null_resource" "provisioner" {
     user        = "ec2-user"
     # Bir üst klasördeki pem dosyasını kullanıyoruz
     private_key = file("../My-Key-Linux-Amazon.pem") 
-    host        = aws_eip.jumphost_eip.public_ip
+    host        = aws_eip.mydemo_eip.public_ip
   }
 
   # 1. Scripti makinenin içine kopyala
@@ -48,10 +48,10 @@ resource "null_resource" "provisioner" {
   }
 
   # EIP atanmadan SSH yapılamayacağı için bağımlılık ekliyoruz
-  depends_on = [aws_eip_association.jumphost_eip_assoc]
+  depends_on = [aws_eip_association.mydemo_eip_assoc]
 }
 
-resource "aws_eip" "jumphost_eip" {
+resource "aws_eip" "mydemo_eip" {
   domain = "vpc"
 
   tags = {
@@ -61,7 +61,7 @@ resource "aws_eip" "jumphost_eip" {
   depends_on = [aws_internet_gateway.igw]
 }
 
-resource "aws_eip_association" "jumphost_eip_assoc" {
+resource "aws_eip_association" "mydemo_eip_assoc" {
   instance_id   = aws_instance.ec2.id
-  allocation_id = aws_eip.jumphost_eip.id
+  allocation_id = aws_eip.mydemo_eip.id
 }

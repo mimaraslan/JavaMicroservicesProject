@@ -53,9 +53,29 @@ resource "aws_iam_role" "worker" {
   })
 }
 
-# MEVCUT POLİTİKAYI OKUMA (Doğru Kullanım: Sadece name verilir)
-data "aws_iam_policy" "autoscaler" {
-  name = "mydemo-eks-autoscaler-policy1"
+# Data yerine Resource yaparak politikayı biz oluşturuyoruz.
+resource "aws_iam_policy" "autoscaler" {
+  name        = "mydemo-eks-autoscaler-policy1"
+  description = "EKS Autoscaler policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeTags",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "ec2:DescribeLaunchTemplateVersions"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
@@ -83,9 +103,9 @@ resource "aws_iam_role_policy_attachment" "S3ReadOnlyAccess" {
   role       = aws_iam_role.worker.name
 }
 
-# Mevcut olan autoscaler politikasını role bağlama
+# Politikayı role bağlama (Resource'dan gelen ARN kullanılıyor)
 resource "aws_iam_role_policy_attachment" "autoscaler" {
-  policy_arn = data.aws_iam_policy.autoscaler.arn
+  policy_arn = aws_iam_policy.autoscaler.arn
   role       = aws_iam_role.worker.name
 }
 
@@ -100,7 +120,7 @@ resource "aws_iam_instance_profile" "worker" {
 # ---------------------------------------------------------
 data "aws_vpc" "main" {
   tags = {
-    Name = "Jumphost-vpc"
+    Name = "mydemo-vpc"
   }
 }
 
@@ -124,7 +144,7 @@ data "aws_security_group" "selected" {
   vpc_id = data.aws_vpc.main.id
   filter {
     name   = "tag:Name"
-    values = ["Jumphost-sg"]
+    values = ["mydemo-sg"]
   }
 }
 
@@ -140,7 +160,6 @@ resource "aws_eks_cluster" "eks" {
     security_group_ids = [data.aws_security_group.selected.id]
   }
 
-  # Yeni Nesil Erişim Yapılandırması (Otomatik bağlantı için kritik)
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
     bootstrap_cluster_creator_admin_permissions = true
@@ -160,7 +179,7 @@ resource "aws_eks_cluster" "eks" {
 }
 
 # ---------------------------------------------------------
-# 5. EKS Node Group (İşçi Düğümler)
+# 5. EKS Node Group
 # ---------------------------------------------------------
 resource "aws_eks_node_group" "node-grp" {
   cluster_name    = aws_eks_cluster.eks.name
@@ -200,22 +219,17 @@ resource "aws_eks_node_group" "node-grp" {
 }
 
 # ---------------------------------------------------------
-# 6. Kullanıcı Erişimi (Eskisi gibi otomatik bağlanmanı sağlar)
+# 6. Kullanıcı Erişimi
 # ---------------------------------------------------------
 resource "aws_eks_access_entry" "aslan_admin" {
-  cluster_name      = aws_eks_cluster.eks.name
-
-  # Bu kısmı AWS kullanıcısı kendine göre düzenleyecek.
-  principal_arn     = "arn:aws:iam::405834051687:user/mydemouser"
-  
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.eks.name
+  principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
+  type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "aslan_admin_policy" {
   cluster_name  = aws_eks_cluster.eks.name
   policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
-
-  # Bu kısmı AWS kullanıcısı kendine göre düzenleyecek.
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
 
   access_scope {
