@@ -16,15 +16,26 @@ spec:
       containers:
       - name: config-server-local
         image: 405834051687.dkr.ecr.us-east-1.amazonaws.com/configserverlocal:5
+        imagePullPolicy: Always
         ports:
         - containerPort: 8888
         env:
         - name: SPRING_PROFILES_ACTIVE
-          value: "kubernetes"
+          value: "native,kubernetes"
         - name: SERVER_PORT
           value: "8888"
         - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
           value: "http://dashboard-eureka-server:8761/eureka/"
+        livenessProbe:
+          tcpSocket:
+            port: 8888
+          initialDelaySeconds: 45
+          periodSeconds: 15
+        readinessProbe:
+          tcpSocket:
+            port: 8888
+          initialDelaySeconds: 20
+          periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
