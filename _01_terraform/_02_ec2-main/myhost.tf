@@ -29,7 +29,7 @@ resource "null_resource" "provisioner" {
     type        = "ssh"
     user        = "ec2-user"
     # Bir üst klasördeki pem dosyasını kullanıyoruz
-   // private_key = file("../My-Key-Linux-Amazon.pem") 
+    private_key = file("../My-Key-Linux-Amazon.pem") 
     host        = aws_eip.mydemo_eip.public_ip
   }
 
