@@ -9,8 +9,6 @@ resource "aws_instance" "ec2" {
     volume_size = 30
   }
   
-  # User data yine de dursun, ama asıl işi provisioner yapacak
-  user_data = file("./install-tools.sh")
 
   tags = {
     Name = var.instance_name
