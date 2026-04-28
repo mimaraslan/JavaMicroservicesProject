@@ -9,6 +9,8 @@ resource "aws_instance" "ec2" {
     volume_size = 30
   }
   
+  # Kurulum scripti sadece null_resource/remote-exec ile çalıştırılıyor.
+  # user_data kaldırılarak dnf/yum işlemlerinin çift tetiklenmesi engellenir.
 
   tags = {
     Name = var.instance_name
