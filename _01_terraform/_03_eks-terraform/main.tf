@@ -161,7 +161,7 @@ data "aws_security_group" "selected" {
 # ---------------------------------------------------------
 # Kubernetes yönetim panelini (Control Plane) kuruyoruz.
 resource "aws_eks_cluster" "eks" {
-  name     = "project-eks"
+name     = var.cluster_name # "project-eks" 
   role_arn = aws_iam_role.master.arn
 
   vpc_config {
@@ -207,8 +207,9 @@ resource "aws_eks_node_group" "node-grp" {
   }
 
   # MyNode etiketi sayesinde EC2 panelinde makineleri bu isimle görürsün.
+  # OTOMATİK İSİMLENDİRME BURADA YAPILIYOR
   tags = {
-    Name = "MyNode"
+    "Name" = var.instance_name # variables.tf içindeki 'mydemo-eks-node' değerini basar
     "kubernetes.io/cluster/${aws_eks_cluster.eks.name}" = "owned"
   }
 
