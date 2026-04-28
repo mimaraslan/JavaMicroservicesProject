@@ -125,6 +125,11 @@ services:
   config-server:
     image: 405834051687.dkr.ecr.us-east-1.amazonaws.com/configserverlocal:${CONFIGSERVERLOCAL_TAG:-latest}
     container_name: config-server
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      SPRING_DATA_REDIS_HOST: redis
+      EUREKA_CLIENT_ENABLED: "false"
+      MANAGEMENT_HEALTH_REDIS_ENABLED: "false"
     ports:
       - "8888:8888"
     networks:
