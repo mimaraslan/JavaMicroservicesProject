@@ -25,7 +25,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('_01_terraform/_02_terraform_main_ec2') {
+                dir('_01_terraform/_02_ec2-main') {
                     // S3 backend ve provider yapılandırmasını başlatır
                     sh 'terraform init --reconfigure'
                 }
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir('_01_terraform/_02_terraform_main_ec2') {
+                dir('_01_terraform/_02_ec2-main') {
                     sh 'terraform validate'
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('_01_terraform/_02_terraform_main_ec2') {
+                dir('_01_terraform/_02_ec2-main') {
                     // Plan dosyasını oluşturur. 
                     // Bu dosya provisioner (SSH) adımlarının güvenliği için kritiktir.
                     sh 'terraform plan -out=tfplan_ec2'
@@ -55,10 +55,10 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                dir('_01_terraform/_02_terraform_main_ec2') {
+                dir('_01_terraform/_02_ec2-main') {
                     // SSH bağlantısı (remote-exec) bu aşamada gerçekleşir.
                     // Logları Jenkins konsolundan canlı izleyebilirsin.
-                    sh 'terraform apply -auto-approve tfplan_ec2'
+                    sh 'terraform apply -auto-approve tfplan_CDec2'
                 }
             }
         }
@@ -78,7 +78,7 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                dir('_01_terraform/_02_terraform_main_ec2') {
+                dir('_01_terraform/_02_ec2-main') {
                     sh 'terraform destroy -auto-approve'
                 }
             }

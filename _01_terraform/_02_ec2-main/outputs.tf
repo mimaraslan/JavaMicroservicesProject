@@ -1,5 +1,5 @@
 output "region" {
-    description = "mydemo Server region"
+    description = "mydemo server region"
     value = var.region
 }
 output "mydemo_public_ip" {

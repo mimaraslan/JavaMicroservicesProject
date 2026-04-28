@@ -36,8 +36,8 @@ out/
 .vscode/
 _01_terraform/_01_s3-buckets/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/terraform-provider-aws_v6.42.0_x5.exe
 _01_terraform/_01_s3-buckets/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
-_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
-/_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64
+_01_terraform/_02_ec2-main/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
+/_01_terraform/_02_ec2-main/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64
 *.pem
 *.backup
 *.backup
@@ -47,9 +47,9 @@ _01_terraform/_03_eks-terraform/.terraform/providers/registry.terraform.io/hashi
 _01_terraform/_03_eks-terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/6.42.0/windows_amd64/LICENSE.txt
 _01_terraform/_03_eks-terraform/.terraform/providers/registry.terraform.io/hashicorp/tls/4.2.1/windows_amd64/LICENSE.txt
 _01_terraform/_03_eks-terraform/.terraform/providers/registry.terraform.io/hashicorp/tls/4.2.1/windows_amd64/terraform-provider-tls_v4.2.1_x5.exe
-_01_terraform/_02_terraform_main_ec2/.terraform/terraform.tfstate
-_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/null/3.2.4/windows_amd64/terraform-provider-null_v3.2.4_x5.exe
-_01_terraform/_02_terraform_main_ec2/.terraform/providers/registry.terraform.io/hashicorp/null/3.2.4/windows_amd64/LICENSE.txt
-_01_terraform/_02_terraform_main_ec2/.terraform/terraform.tfstate
+_01_terraform/_02_ec2-main/.terraform/terraform.tfstate
+_01_terraform/_02_ec2-main/.terraform/providers/registry.terraform.io/hashicorp/null/3.2.4/windows_amd64/terraform-provider-null_v3.2.4_x5.exe
+_01_terraform/_02_ec2-main/.terraform/providers/registry.terraform.io/hashicorp/null/3.2.4/windows_amd64/LICENSE.txt
+_01_terraform/_02_ec2-main/.terraform/terraform.tfstate
 _01_terraform/_01_s3-buckets/terraform.tfstate.backup
 _01_terraform/_01_s3-buckets/terraform.tfstate
