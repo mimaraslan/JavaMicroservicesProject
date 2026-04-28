@@ -232,10 +232,11 @@ resource "aws_eks_node_group" "node-grp" {
 }
 
 # ---------------------------------------------------------
-# 6. Kullanıcı Erişimi (Access Entry)
+# 6. Kullanıcı ve Rol Erişimi (Access Entry)
 # ---------------------------------------------------------
+# 6.1. Kişisel Kullanıcı Erişimi (mydemouser)
 # Senin (mydemouser) cluster'a dışarıdan bağlanabilmen için kapıyı açıyoruz.
-resource "aws_eks_access_entry" "aslan_admin" {
+resource "aws_eks_access_entry" "mydemouser_access" {
   cluster_name  = aws_eks_cluster.eks.name
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
   type          = "STANDARD"
@@ -243,7 +244,7 @@ resource "aws_eks_access_entry" "aslan_admin" {
 
 # 'mydemouser' kullanıcısına Cluster Admin yetkisi atıyoruz.
 # policy_arn: EKS'ye özel Cluster Access Policy formatı kullanılmıştır.
-resource "aws_eks_access_policy_association" "aslan_admin_policy" {
+resource "aws_eks_access_policy_association" "mydemouser_policy" {
   cluster_name  = aws_eks_cluster.eks.name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = "arn:aws:iam::405834051687:user/mydemouser"
@@ -252,6 +253,27 @@ resource "aws_eks_access_policy_association" "aslan_admin_policy" {
     type = "cluster"
   }
 }
+
+
+
+# 6.2. mydemo-iam-role1 Erişimi (Mevcut Terminal Erişimi İçin)
+# 'aws sts get-caller-identity' çıktısında görünen role tam yetki verir.
+resource "aws_eks_access_entry" "mydemo_terminal_access" {
+  cluster_name  = aws_eks_cluster.eks.name
+  principal_arn = "arn:aws:iam::405834051687:role/mydemo-iam-role1"
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "mydemo_terminal_policy" {
+  cluster_name  = aws_eks_cluster.eks.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::405834051687:role/mydemo-iam-role1"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 
 # ---------------------------------------------------------
 # 7. OIDC Provider
