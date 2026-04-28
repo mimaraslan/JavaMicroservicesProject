@@ -5,7 +5,13 @@ pipeline {
         choice(
             name: 'ACTION',
             choices: ['apply', 'destroy'],
-            description: '🔧 Yapılacak işlemi seçin (Dikkat: destroy tüm EKS yapısını siler!)'
+            description: '🔧 Yapılacak işlemi seçin'
+        )
+        // Buraya ekledik: Artık isim değiştirmek için koda girmene gerek yok!
+        string(
+            name: 'INSTANCE_NAME',
+            defaultValue: 'mydemo-eks-worker-node',
+            description: 'EC2 panelinde görünecek Node ismi'
         )
     }
 
@@ -27,8 +33,8 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
-                    // Planı bir dosyaya yazıyoruz
-                    sh 'terraform plan -out=tfplan'
+                    // Değişkeni buradan besliyoruz
+                    sh "terraform plan -var='instance_name=${params.INSTANCE_NAME}' -out=tfplan"
                 }
             }
         }
@@ -37,7 +43,6 @@ pipeline {
             when { expression { params.ACTION == 'apply' } }
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
-                    // Sadece hazırlanan planı uyguluyoruz
                     sh 'terraform apply -auto-approve tfplan'
                 }
             }
@@ -46,7 +51,6 @@ pipeline {
         stage('Terraform Destroy Confirm') {
             when { expression { params.ACTION == 'destroy' } }
             steps {
-                // Silme işlemi öncesi manuel onay (Opsiyonel)
                 input message: "EKS Cluster'ı silmek istediğinizden emin misiniz?", ok: "Evet, Sil"
             }
         }
@@ -55,15 +59,18 @@ pipeline {
             when { expression { params.ACTION == 'destroy' } }
             steps {
                 dir('_01_terraform/_03_eks-terraform') {
-                    sh 'terraform destroy -auto-approve'
+                    sh "terraform destroy -var='instance_name=${params.INSTANCE_NAME}' -auto-approve"
                 }
             }
         }
     }
     
     post {
-        always {
-            echo "İşlem tamamlandı. Durum: ${currentBuild.result}"
+        success {
+            echo "✅ İşlem başarıyla tamamlandı!"
+        }
+        failure {
+            echo "❌ Hata oluştu! Lütfen logları ve Access Entry ayarlarını kontrol edin."
         }
     }
 }
