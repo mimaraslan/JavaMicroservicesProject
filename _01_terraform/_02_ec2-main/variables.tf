@@ -85,3 +85,21 @@ variable "instance_name" {
   default     = "mydemo-server"
 }
 
+variable "allowed_cidr_blocks" {
+  description = "Allowed IPv4 CIDR blocks for inbound access (use x.x.x.x/32 for single IP)"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "allowed_ipv6_cidr_blocks" {
+  description = "Allowed IPv6 CIDR blocks for inbound access"
+  type        = list(string)
+  default     = ["::/0"]
+}
+
+variable "auto_detect_public_ip" {
+  description = "If true, auto-detect current public IP and allow only that /32"
+  type        = bool
+  default     = false
+}
+
