@@ -13,6 +13,15 @@ ECR_REGISTRY="${ECR_REGISTRY:-405834051687.dkr.ecr.us-east-1.amazonaws.com}"
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.aws.yml}"
 ENV_FILE="${ENV_FILE:-.env}"
 
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD="docker compose"
+elif command -v docker-compose >/dev/null 2>&1; then
+  COMPOSE_CMD="docker-compose"
+else
+  echo "ERROR: Neither 'docker compose' nor 'docker-compose' is available."
+  exit 1
+fi
+
 if [[ ! -f "${COMPOSE_FILE}" ]]; then
   echo "ERROR: ${COMPOSE_FILE} not found in current directory."
   exit 1
@@ -39,10 +48,10 @@ aws ecr get-login-password --region "${AWS_REGION}" \
   | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
 echo "Pulling images..."
-docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" pull
+${COMPOSE_CMD} -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" pull
 
 echo "Starting services..."
-docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" up -d --remove-orphans
+${COMPOSE_CMD} -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" up -d --remove-orphans
 
 echo "Done. Current status:"
-docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" ps
+${COMPOSE_CMD} -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" ps
