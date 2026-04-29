@@ -16,6 +16,14 @@ spec:
       containers:
       - name: redpanda
         image: redpandadata/redpanda:v25.3.1
+        command:
+        - /bin/bash
+        - -c
+        - >
+          rpk redpanda start
+          --mode dev-container
+          --kafka-addr PLAINTEXT://0.0.0.0:9092
+          --advertise-kafka-addr PLAINTEXT://redpanda.dev.svc.cluster.local:9092
         ports:
         - containerPort: 9092
         volumeMounts:
