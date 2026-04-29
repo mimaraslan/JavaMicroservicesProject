@@ -26,8 +26,6 @@ spec:
           --memory 1G
           --reserve-memory 0M
           --node-id 0
-          --kafka-addr internal://0.0.0.0:9092
-          --advertise-kafka-addr internal://redpanda:9092
         ports:
         - containerPort: 9092
         volumeMounts:
