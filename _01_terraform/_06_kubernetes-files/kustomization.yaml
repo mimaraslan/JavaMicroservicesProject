@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - postgres.yaml
+  - postgres-init-job.yaml
   - redpanda.yaml
   - configserverlocal.yaml
   - dashboardeurekaserver.yaml
