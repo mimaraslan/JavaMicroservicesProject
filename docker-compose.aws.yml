@@ -164,7 +164,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_DATA_REDIS_HOST: redis
-      ZIPKIN_BASE_URL: http://zipkin:9411
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       KEYCLOAK_SERVER_URL: http://keycloak:8080
     networks:
       - microservices-net
@@ -194,7 +195,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
-      ZIPKIN_BASE_URL: http://zipkin:9411
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - microservices-net
       - keycloak-net
@@ -223,7 +225,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
-      ZIPKIN_BASE_URL: http://zipkin:9411
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - microservices-net
       - keycloak-net
@@ -250,7 +253,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
-      ZIPKIN_BASE_URL: http://zipkin:9411
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - microservices-net
       - keycloak-net
@@ -274,12 +278,15 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_DATA_REDIS_HOST: redis
-      ZIPKIN_BASE_URL: http://zipkin:9411
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     networks:
       - microservices-net
       - keycloak-net
     depends_on:
       redis:
+        condition: service_started
+      zipkin:
         condition: service_started
       config-server:
         condition: service_healthy
