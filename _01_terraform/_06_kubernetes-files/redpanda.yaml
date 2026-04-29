@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda
+  template:
+    metadata:
+      labels:
+        app: redpanda
+    spec:
+      containers:
+      - name: redpanda
+        image: redpandadata/redpanda:v25.3.1
+        command:
+        - /bin/bash
+        - -c
+        - >
+          redpanda start
+          --overprovisioned
+          --smp 1
+          --memory 1G
+          --reserve-memory 0M
+          --node-id 0
+          --check=false
+          --kafka-addr internal://0.0.0.0:9092
+          --advertise-kafka-addr internal://redpanda:9092
+        ports:
+        - containerPort: 9092
+        volumeMounts:
+        - name: redpanda-data
+          mountPath: /var/lib/redpanda/data
+      # NOTE: For production-grade persistence, replace emptyDir with a PVC.
+      volumes:
+      - name: redpanda-data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda
+spec:
+  type: ClusterIP
+  selector:
+    app: redpanda
+  ports:
+  - name: kafka
+    port: 9092
+    targetPort: 9092
