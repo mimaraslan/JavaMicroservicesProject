@@ -47,6 +47,8 @@ spec:
           value: "redpanda:9092"
         - name: MANAGEMENT_HEALTH_KAFKA_ENABLED
           value: "false"
+        - name: MANAGEMENT_HEALTH_REDIS_ENABLED
+          value: "false"
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:

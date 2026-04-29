@@ -30,6 +30,21 @@ spec:
           value: "http://config-server-local:8888"
         - name: SPRING_CLOUD_CONFIG_FAIL_FAST
           value: "false"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/Micro_AccountServiceDB"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "postgres"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: microservices-secrets
+              key: postgres-password
+        - name: SPRING_DATA_REDIS_HOST
+          value: "redis"
+        - name: SPRING_DATA_REDIS_PORT
+          value: "6379"
+        - name: MANAGEMENT_HEALTH_REDIS_ENABLED
+          value: "false"
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
