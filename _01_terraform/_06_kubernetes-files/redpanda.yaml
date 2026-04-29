@@ -20,12 +20,7 @@ spec:
         - /bin/bash
         - -c
         - >
-          redpanda start
-          --overprovisioned
-          --smp 1
-          --memory 1G
-          --reserve-memory 0M
-          --node-id 0
+          redpanda start --mode dev-container
         ports:
         - containerPort: 9092
         volumeMounts:
