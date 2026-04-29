@@ -16,9 +16,10 @@ spring:
       probability: 1.0
 
   datasource:
-    url: jdbc:postgresql://localhost:9999/Micro_AccountServiceDB 
-    password: 123456789                                  
-    driver-class-name: org.postgresql.Driver   
+    url: jdbc:postgresql://localhost:9999/Micro_AccountServiceDB
+    username: postgres
+    password: 123456789
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update  

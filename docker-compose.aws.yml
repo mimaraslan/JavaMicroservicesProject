@@ -161,6 +161,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_AccountServiceDB
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_DATA_REDIS_HOST: redis
       ZIPKIN_BASE_URL: http://zipkin:9411
@@ -189,6 +190,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_LedgerServiceDB
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
@@ -218,6 +220,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_FraudServiceDB
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
       ZIPKIN_BASE_URL: http://zipkin:9411
@@ -244,6 +247,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/Micro_NotificationServiceDB
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-123456789}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
       ZIPKIN_BASE_URL: http://zipkin:9411
